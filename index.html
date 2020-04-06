@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Needles Demo</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      --border-width: 1vw;
+    }
+    body {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      font-family: courier, monospace;
+    }
+    button, .button {
+      position: relative;
+      box-sizing: border-box;
+      display: inline-block;
+      font-weight: 400;
+      text-align: center;
+      text-decoration: none;
+      white-space: nowrap;
+      vertical-align: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      padding: 0 4px;
+      font-size: inherit;
+      font-family: inherit;
+      line-height: 1.25;
+      color: black;
+      background-color: white;
+      border: 2px solid black;
+    }
+    button.primary {
+      color: white;
+      background-color: black;
+      text-transform: uppercase;
+      letter-spacing: 0.125em;
+    }
+
+    input[type="file"] {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      opacity: 0;
+      -ms-filter: 'alpha(opacity=0)';
+      font-size: 200px;
+      direction: ltr;
+      cursor: pointer;
+    }
+
+    [hidden] {
+      display: none;
+    }
+    header {
+      padding: .25rem;
+      background-color: #ccc;
+      border-top: 1px solid;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1rem;
+      text-align: left;
+    }
+    main {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100%;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      line-height: 0;
+      padding: .25rem;
+      border-bottom: var(--border-width) solid;
+    }
+    #state {
+      display: none;
+      color: crimson;
+    }
+    @media (min-width: 768px) {
+      #state {
+        display: inline;
+      }
+    }
+    .meters {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .meter {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      position: relative;
+    }
+    .meter + .meter {
+      border-left: var(--border-width) solid;
+    }
+    .meter__label {
+      padding: .25em;
+      font-size: 1rem;
+    }
+    .meter__value {
+      display: flex;
+      flex-direction: column;
+      font-size: 5vw;
+      padding: 1rem;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: bold;
+    }
+    .meter__needle {
+      box-sizing: border-box;
+      position: absolute;
+      z-index: -1;
+      bottom: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      transform: translateY(100%);
+      transition: transform .09s;
+      background-color: #CCC;
+    }
+    #integrated-needle {
+      transition: transform .3s;
+    }
+  </style>
+  <link rel="prefetch" as="worker" href="dist/needles-worker.js"  type="text/javascript">
+  <link rel="prefetch" as="worker" href="dist/needles-worklet.js"  type="text/javascript">
+  <script src="./dist/needles.js" type="module"></script>
+  <script src="demo.js" type="module" defer></script>
+</head>
+<body>
+  <header>
+    <h1>LUFS Meter</h1>
+  </header>
+  <main>
+    <div class="controls">
+      <div style="text-align: left">
+        <span class="button">
+          <span>Choose</span>
+          <input type="file" accept="audio/*">
+        </span>
+      </div>
+
+      <div>
+        <button class="primary" id="play" hidden>Play</button>
+        <button class="primary" id="pause" hidden>Pause</button>
+      </div>
+
+      <div style="text-align: right">
+        <span id="state"></span>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="meters">
+      <div class="meter meter--momentary">
+        <div class="meter__needle" id="momentary-needle"></div>
+        <div class="meter__value">
+          <div id="momentary-value">-Inf</div>
+        </div>
+        <div class="meter__label">Momentary</div>
+      </div>
+
+      <div class="meter meter--short-term">
+        <div class="meter__needle" id="short-term-needle"></div>
+        <div class="meter__value">
+          <div id="short-term-value">-Inf</div>
+        </div>
+        <div class="meter__label">Short-term</div>
+      </div>
+
+      <div class="meter meter--integrated">
+        <div class="meter__needle" id="integrated-needle"></div>
+        <div class="meter__value">
+          <div id="integrated-value">-Inf</div>
+        </div>
+        <div class="meter__label">Integrated</div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

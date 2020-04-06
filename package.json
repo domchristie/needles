@@ -1,0 +1,32 @@
+{
+  "name": "@domchristie/needles",
+  "version": "0.0.1",
+  "description": "Audio loudness metering for the browser.",
+  "main": "dist/needles.umd.js",
+  "module": "dist/needles.js",
+  "scripts": {
+    "build:worker": "rollup -i src/workers/worker.js -o dist/needles-worker.js -f esm --context this",
+    "build:worklet": "rollup -i src/workers/worklet.js -o dist/needles-worklet.js -f esm",
+    "build:needles": "rollup -i src/needles.js -d dist -f esm",
+    "build:needles:umd": "rollup -i src/needles.js -o dist/needles.umd.js -f umd -n Needles",
+    "build": "npm run build:worker && npm run build:worklet && npm run build:needles && npm run build:needles:umd",
+    "test": "rollup -c test/rollup.config.js && tape test/cjs/**/*-test.js"
+  },
+  "keywords": [
+    "audio",
+    "web",
+    "audio",
+    "lufs",
+    "lkfs",
+    "meter",
+    "metering",
+    "loudness"
+  ],
+  "author": "Dom Christie",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "tape": "^4.13.2"
+  }
+}
