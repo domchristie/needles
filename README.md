@@ -80,7 +80,7 @@ var audioContext = new AudioContext()
 
 Create your source: usually by decoding an array buffer from an XHR response, or from reading the file with the `FileReader` API. Once a file has been decoded, create an `OfflineAudioContext` using the buffer properties, followed by a buffer source. Finally, create your `needles` passing in the `source`, then `start` the analysis. Offline integrated analyses report `dataavailable` just once, when the entire buffer has been processed.
 
-```
+```js
 var fileReader = new FileReader()
 fileReader.onload = function (event) {
   audioContext.decodeAudioData(event.target.result, audioDecoded)
