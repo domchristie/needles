@@ -44,8 +44,6 @@ source.connect(audioContext.destination)
 Create your `needles` passing in the source, and the worker path:
 
 ```js
-import Needles from './path/to/needles.js'
-
 var needles = new Needles({
   source: source,
   workerUri: 'public/path/to/needles-worker.js'
