@@ -215,7 +215,7 @@ class OfflineAdapter {
   }
 }
 
-// Disable AudioWorklet as it's glitchy
+// Disable AudioWorklet because it currently results in glitchy audio playback
 const audioWorkletEnabled = false;
 
 /**
