@@ -51,7 +51,7 @@ export default class Needles {
     if (this.offline) {
       this.workerAdapter.message({
         type: 'set',
-        key: 'integratedUpdateDuration',
+        key: 'duration',
         value: audioBuffer.duration * 1000
       })
     }
