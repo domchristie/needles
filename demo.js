@@ -1,4 +1,4 @@
-import Needles from './dist/needles.js'
+import { LoudnessMeter } from './dist/needles.js'
 
 ;(function () {
   var AudioContext = window.AudioContext || window.webkitAudioContext
@@ -7,8 +7,8 @@ import Needles from './dist/needles.js'
   var offlineAudioContext
   var fileReader = new FileReader()
   var audio = new Audio()
-  var offlineNeedles
-  var liveNeedles
+  var offlineMeters
+  var liveMeters
   var bufferSource
   var elementSource
 
@@ -45,10 +45,7 @@ import Needles from './dist/needles.js'
       if (!elementSource) {
         elementSource = audioContext.createMediaElementSource(audio)
         elementSource.connect(audioContext.destination)
-        liveNeedles = createNeedles(
-          elementSource,
-          ['ebu-mode:momentary','ebu-mode:short-term', 'ebu-mode:integrated']
-        )
+        liveMeters = createMeters(elementSource)
       }
     }
   }
@@ -62,9 +59,9 @@ import Needles from './dist/needles.js'
     bufferSource = offlineAudioContext.createBufferSource()
     bufferSource.buffer = buffer
 
-    offlineNeedles = createNeedles(bufferSource, ['ebu-mode:integrated'])
+    offlineMeters = createMeters(bufferSource, ['ebu-mode:integrated'])
     setState('Measuring')
-    offlineNeedles.start()
+    offlineMeters.start()
   }
 
   playButton.addEventListener('click', function () {
@@ -76,19 +73,19 @@ import Needles from './dist/needles.js'
   })
 
   resetButton.addEventListener('click', function () {
-    if (liveNeedles) liveNeedles.reset()
-    if (offlineNeedles) offlineNeedles.reset()
+    if (liveMeters) liveMeters.reset()
+    if (offlineMeters) offlineMeters.reset()
   })
 
   audio.addEventListener('play', function () {
     setState('Live')
-    liveNeedles.state === 'paused' ? liveNeedles.resume() : liveNeedles.start()
+    liveMeters.state === 'paused' ? liveMeters.resume() : liveMeters.start()
     playButton.hidden = true
     pauseButton.hidden = false
   })
 
   audio.addEventListener('pause', function () {
-    liveNeedles.pause()
+    liveMeters.pause()
     pauseButton.hidden = true
     playButton.hidden = false
   })
@@ -98,18 +95,18 @@ import Needles from './dist/needles.js'
   }, { once: true })
 
   audio.addEventListener('ended', function () {
-    liveNeedles.reset()
+    liveMeters.reset()
   })
 
-  function createNeedles (source, modes) {
-    var needles = new Needles({
+  function createMeters (source, modes) {
+    var loudnessMeter = new LoudnessMeter({
       source: source,
       workerUri: 'dist/needles-worker.js',
       workletUri: 'dist/needles-worklet.js',
       modes: modes
     })
 
-    needles.on('dataavailable', function (event) {
+    loudnessMeter.on('dataavailable', function (event) {
       if (state === 'Measuring') setState('')
 
       var map = {
@@ -123,7 +120,7 @@ import Needles from './dist/needles.js'
       value.textContent = formattedValue(event.data.value)
     })
 
-    return needles
+    return loudnessMeter
   }
 
   function setState (newState) {

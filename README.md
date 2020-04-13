@@ -29,7 +29,7 @@ Then make the included `dist/needles-worker.js` file accessible on your server.
 Import the library and create your source, for example via an `<audio>` element:
 
 ```js
-import Needles from '@domchristie/needles'
+import { LoudnessMeter } from '@domchristie/needles'
 
 var AudioContext = window.AudioContext || window.webkitAudioContext
 var audioContext = new AudioContext()
@@ -41,10 +41,10 @@ var source = audioContext.createMediaElementSource(audioElement)
 source.connect(audioContext.destination)
 ```
 
-Create your `needles` passing in the source, and the worker path:
+Create your `loudnessMeter` passing in the source, and the worker path:
 
 ```js
-var needles = new Needles({
+var loudnessMeter = new LoudnessMeter({
   source: source,
   workerUri: 'public/path/to/needles-worker.js'
 })
@@ -53,7 +53,7 @@ var needles = new Needles({
 Listen for the `dataavailable` event which reports the loudness for each mode:
 
 ```js
-needles.on('dataavailable', function (event) {
+loudnessMeter.on('dataavailable', function (event) {
   event.data.mode // ebu-mode:momentary | ebu-mode:short-term | ebu-mode:integrated
   event.data.value // -14
 })
@@ -62,7 +62,7 @@ needles.on('dataavailable', function (event) {
 Start metering:
 
 ```js
-needles.start()
+loudnessMeter.start()
 ```
 
 ### Offline Analysis
@@ -70,13 +70,13 @@ needles.start()
 Import the library and create an `AudioContext`:
 
 ```js
-import Needles from '@domchristie/needles'
+import { LoudnessMeter } from '@domchristie/needles'
 
 var AudioContext = window.AudioContext || window.webkitAudioContext
 var audioContext = new AudioContext()
 ```
 
-Create your source: usually by decoding an array buffer from an XHR response, or from reading the file with the `FileReader` API. Once a file has been decoded, create an `OfflineAudioContext` using the buffer properties, followed by a buffer source. Finally, create your `needles` passing in the `source`, then `start` the analysis. Offline integrated analyses report `dataavailable` just once, when the entire buffer has been processed.
+Create your source: usually by decoding an array buffer from an XHR response, or from reading the file with the `FileReader` API. Once a file has been decoded, create an `OfflineAudioContext` using the buffer properties, followed by a buffer source. Finally, create your `loudnessMeter` passing in the `source`, then `start` the analysis. Offline integrated analyses report `dataavailable` just once, when the entire buffer has been processed.
 
 ```js
 var fileReader = new FileReader()
@@ -102,17 +102,17 @@ function audioDecoded (buffer) {
   var source = offlineAudioContext.createBufferSource()
   source.buffer = buffer
 
-  var needles = new Needles({
+  var loudnessMeter = new Needles({
     source: source,
     modes: ['ebu-mode:integrated'],
     workerUri: 'public/path/to/needles-worker.js'
   })
 
-  needles.on('dataavailable', function (event) {
+  loudnessMeter.on('dataavailable', function (event) {
     console.log(event.data.value)
   })
 
-  needles.start()
+  loudnessMeter.start()
 }
 ```
 
@@ -128,7 +128,7 @@ Operating modes can be chosen by passing in a `modes` array. Possible modes are:
 For example, to only meter short-term and integrated readings:
 
 ```js
-var needles = new Needles({
+var loudnessMeter = new LoudnessMeter({
   source: source,
   modes: ['ebu-mode:short-term', 'ebu-mode:integrated'],
   workerUri: 'public/path/to/needles-worker.js'
