@@ -358,9 +358,9 @@ class Controller {
 
 function LoudnessMeter (options) {
   options.modes = options.modes || [
-    'ebu-mode:momentary',
-    'ebu-mode:short-term',
-    'ebu-mode:integrated'
+    'momentary',
+    'short-term',
+    'integrated'
   ];
   const context = options.source.context;
   const filter1 = preFilter(context);
