@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Needles = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = global || self, factory(global.Needles = {}));
+}(this, (function (exports) { 'use strict';
 
   // Calculations from https://doxy.audacityteam.org/_e_b_u_r128_8cpp_source.html
 
@@ -261,7 +261,7 @@
 
   const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
 
-  class Needles {
+  class Controller {
     constructor (options) {
       this.state = 'inactive';
       this._listeners = {};
@@ -270,24 +270,15 @@
       this.workerUri = options.workerUri;
       this.workletUri = options.workletUri;
       this.source = options.source;
+      this.weightedSource = options.weightedSource;
       this.context = this.source.context;
       this.offline = this.context instanceof OfflineAudioContext;
-
-      const filter1 = preFilter(this.context);
-      const filter2 = weightingFilter(this.context);
-      this.source.connect(filter1);
-      filter1.connect(filter2);
-      this.kWeightedSource = filter2;
 
       this.workerAdapter.message({
         type: 'initialize',
         attributes: {
           sampleRate: this.context.sampleRate,
-          modes: options.modes || [
-            'ebu-mode:momentary',
-            'ebu-mode:short-term',
-            'ebu-mode:integrated'
-          ]
+          modes: options.modes
         },
       });
     }
@@ -296,7 +287,7 @@
       return this._workerAdapter = this._workerAdapter || new WorkerAdapter({
         controller: this,
         context: this.context,
-        source: this.kWeightedSource
+        source: this.weightedSource || this.source
       })
     }
 
@@ -308,7 +299,7 @@
       if (this.offline) {
         this.workerAdapter.message({
           type: 'set',
-          key: 'integratedUpdateDuration',
+          key: 'duration',
           value: audioBuffer.duration * 1000
         });
       }
@@ -371,6 +362,23 @@
     }
   }
 
-  return Needles;
+  function LoudnessMeter (options) {
+    options.modes = options.modes || [
+      'ebu-mode:momentary',
+      'ebu-mode:short-term',
+      'ebu-mode:integrated'
+    ];
+    const context = options.source.context;
+    const filter1 = preFilter(context);
+    const filter2 = weightingFilter(context);
+    options.source.connect(filter1);
+    filter1.connect(filter2);
+
+    return new Controller({ ...options, weightedSource: filter2 })
+  }
+
+  exports.LoudnessMeter = LoudnessMeter;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

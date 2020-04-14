@@ -255,7 +255,7 @@ class InvalidStateError extends Error {
 
 const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
 
-class Needles {
+class Controller {
   constructor (options) {
     this.state = 'inactive';
     this._listeners = {};
@@ -264,24 +264,15 @@ class Needles {
     this.workerUri = options.workerUri;
     this.workletUri = options.workletUri;
     this.source = options.source;
+    this.weightedSource = options.weightedSource;
     this.context = this.source.context;
     this.offline = this.context instanceof OfflineAudioContext;
-
-    const filter1 = preFilter(this.context);
-    const filter2 = weightingFilter(this.context);
-    this.source.connect(filter1);
-    filter1.connect(filter2);
-    this.kWeightedSource = filter2;
 
     this.workerAdapter.message({
       type: 'initialize',
       attributes: {
         sampleRate: this.context.sampleRate,
-        modes: options.modes || [
-          'ebu-mode:momentary',
-          'ebu-mode:short-term',
-          'ebu-mode:integrated'
-        ]
+        modes: options.modes
       },
     });
   }
@@ -290,7 +281,7 @@ class Needles {
     return this._workerAdapter = this._workerAdapter || new WorkerAdapter({
       controller: this,
       context: this.context,
-      source: this.kWeightedSource
+      source: this.weightedSource || this.source
     })
   }
 
@@ -302,7 +293,7 @@ class Needles {
     if (this.offline) {
       this.workerAdapter.message({
         type: 'set',
-        key: 'integratedUpdateDuration',
+        key: 'duration',
         value: audioBuffer.duration * 1000
       });
     }
@@ -365,4 +356,19 @@ class Needles {
   }
 }
 
-export default Needles;
+function LoudnessMeter (options) {
+  options.modes = options.modes || [
+    'ebu-mode:momentary',
+    'ebu-mode:short-term',
+    'ebu-mode:integrated'
+  ];
+  const context = options.source.context;
+  const filter1 = preFilter(context);
+  const filter2 = weightingFilter(context);
+  options.source.connect(filter1);
+  filter1.connect(filter2);
+
+  return new Controller({ ...options, weightedSource: filter2 })
+}
+
+export { LoudnessMeter };

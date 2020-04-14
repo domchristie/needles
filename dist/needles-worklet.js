@@ -368,7 +368,7 @@ class Processor {
       sampleRate: this.sampleRate,
       blockDuration: 400,
       blockMargin: 100,
-      updateDuration: this.integratedUpdateDuration || 1000
+      updateDuration: this.duration || 1000
     })
   }
 }
