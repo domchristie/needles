@@ -2,11 +2,12 @@
 Audio loudness metering in the browser.
 
 Features:
-- Live momentary, short-term, and integrated K-weighted loudness (LUFS/LKFS) for a given web audio source
-- Offline integrated K-weighted loudness for file analysis
-- Offline momentary and short-term loudness values for higher resolution file analysis
-- Aims to be EBU Mode compliant, following EBU R 128 / ITU-R BS.1770-4
-- Supports recent versions of Chrome and Firefox
+- Live momentary, short-term, and integrated K-weighted loudness (LUFS/LKFS) for a given web audio source.
+- Offline integrated K-weighted loudness for file analysis.
+- Offline momentary and short-term loudness values for higher resolution file analysis.
+- No GUI, it just reports values. The choice of interface and visual style is up to you!
+- Aims to be EBU Mode compliant, following EBU R 128 / ITU-R BS.1770-4.
+- Supports recent versions of Chrome and Firefox.
 
 Future features:
 - True-peak, dBTP (ITU-R BS.1770-4)
