@@ -65,6 +65,7 @@ import { LoudnessMeter } from './dist/needles.js'
   }
 
   playButton.addEventListener('click', function () {
+    audioContext.resume()
     audio.play()
   })
 
