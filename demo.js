@@ -59,7 +59,7 @@ import { LoudnessMeter } from './dist/needles.js'
     bufferSource = offlineAudioContext.createBufferSource()
     bufferSource.buffer = buffer
 
-    offlineMeters = createMeters(bufferSource, ['ebu-mode:integrated'])
+    offlineMeters = createMeters(bufferSource, ['integrated'])
     setState('Measuring')
     offlineMeters.start()
   }
@@ -110,9 +110,9 @@ import { LoudnessMeter } from './dist/needles.js'
       if (state === 'Measuring') setState('')
 
       var map = {
-        'ebu-mode:momentary': [momentaryNeedle, momentaryValue],
-        'ebu-mode:short-term': [shortTermNeedle, shortTermValue],
-        'ebu-mode:integrated': [integratedNeedle, integratedValue],
+        'momentary': [momentaryNeedle, momentaryValue],
+        'short-term': [shortTermNeedle, shortTermValue],
+        'integrated': [integratedNeedle, integratedValue],
       }
       var translate = translateY(scale(event.data.value))
       var [needle, value] = map[event.data.mode]

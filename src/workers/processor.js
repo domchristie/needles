@@ -52,9 +52,9 @@ export default class {
     if (this._meters) return this._meters
 
     const map = {
-      'ebu-mode:momentary': this._createMomentaryMeter,
-      'ebu-mode:short-term': this._createShortTermMeter,
-      'ebu-mode:integrated': this._createIntegratedMeter,
+      'momentary': this._createMomentaryMeter,
+      'short-term': this._createShortTermMeter,
+      'integrated': this._createIntegratedMeter,
     }
     this._meters = this.modes.map(mode => map[mode].call(this))
     return this._meters
@@ -74,7 +74,7 @@ export default class {
 
   _createMomentaryMeter () {
     return new LoudnessMeter({
-      name: 'ebu-mode:momentary',
+      name: 'momentary',
       delegate: this,
       sampleRate: this.sampleRate,
       blockDuration: 400,
@@ -85,7 +85,7 @@ export default class {
 
   _createShortTermMeter () {
     return new LoudnessMeter({
-      name: 'ebu-mode:short-term',
+      name: 'short-term',
       delegate: this,
       sampleRate: this.sampleRate,
       blockDuration: 3000,
@@ -96,7 +96,7 @@ export default class {
 
   _createIntegratedMeter () {
     return new IntegratedLoudnessMeter({
-      name: 'ebu-mode:integrated',
+      name: 'integrated',
       delegate: this,
       sampleRate: this.sampleRate,
       blockDuration: 400,

@@ -55,7 +55,7 @@ Listen for the `dataavailable` event which reports the loudness for each mode:
 
 ```js
 loudnessMeter.on('dataavailable', function (event) {
-  event.data.mode // ebu-mode:momentary | ebu-mode:short-term | ebu-mode:integrated
+  event.data.mode // momentary | short-term | integrated
   event.data.value // -14
 })
 ```
@@ -105,7 +105,7 @@ function audioDecoded (buffer) {
 
   var loudnessMeter = new Needles({
     source: source,
-    modes: ['ebu-mode:integrated'],
+    modes: ['integrated'],
     workerUri: 'public/path/to/needles-worker.js'
   })
 
@@ -122,16 +122,16 @@ function audioDecoded (buffer) {
 
 Operating modes can be chosen by passing in a `modes` array. Possible modes are:
 
-- `ebu-mode:momentary`
-- `ebu-mode:short-term`
-- `ebu-mode:integrated`
+- `momentary`
+- `short-term`
+- `integrated`
 
 For example, to only meter short-term and integrated readings:
 
 ```js
 var loudnessMeter = new LoudnessMeter({
   source: source,
-  modes: ['ebu-mode:short-term', 'ebu-mode:integrated'],
+  modes: ['short-term', 'integrated'],
   workerUri: 'public/path/to/needles-worker.js'
 })
 ```
@@ -163,7 +163,7 @@ Removes the event handler for the given type. If no handler is specified, all ha
 
 ### `dataavailable`
 Reports measurements for a given mode. The event's `data` includes:
-- **`mode`**: the operating mode, either `ebu-mode:momentary`, `ebu-mode:short-term`, or `ebu-mode:integrated`
+- **`mode`**: the operating mode, either `momentary`, `short-term`, or `integrated`
 - **`value`**: the loudness in LUFS
 
 ### Other events
