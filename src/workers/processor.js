@@ -16,6 +16,7 @@ export default class {
       break
     case 'set':
       this[event.data.key] = event.data.value
+      break
     case 'record':
       this.recording = true
       this.worker.message({ type: 'start' })
